@@ -1,2 +1,7 @@
-# projects
-Any projects i used to participate
+# [Лабораторная работа 1. Утилита WordCount](https://github.com/phantasior/projects/tree/main/labwork-1-phantasior)
+# [Лабораторная работа 2. Длина арифметика uint2022_t](https://github.com/phantasior/projects/tree/main/labwork-2-phantasior)
+# [Лабораторная работа 3. Модель песчаной кучи, позволяющую сохранять свои состояния в картинку в формате BMP](https://github.com/phantasior/projects/tree/main/labwork-3-phantasior)
+# [Лабораторная работа 4. Помехоустойчивый архиватор файлов без сжатия, объединяющий несколько файлов в один архив, с использование кодов Хэмминга.](https://github.com/phantasior/projects/tree/main/labwork-4-phantasior)
+# [Лабораторная работа 5. Класс для парсинга аргументов командной строки.](https://github.com/phantasior/projects/tree/main/labwork-5-phantasior)
+# [Лабораторная работа 6. Парсер своего типа конфигурационные файла (наподобие TOML)](https://github.com/phantasior/projects/tree/main/labwork-6-phantasior)
+# [Лабораторная работа 7. Парсер метаинформации в формате ID3v2.4 из mp3 - файлов.](https://github.com/phantasior/projects/tree/main/labwork-7-phantasior)
