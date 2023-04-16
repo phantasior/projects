@@ -1,0 +1,1 @@
+add_library(buffer empty.cpp Buffer.hpp DynamicBuffer.hpp StaticBuffer.hpp)
