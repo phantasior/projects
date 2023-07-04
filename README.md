@@ -5,7 +5,7 @@
 ### [Лабораторная работа 5. Класс для парсинга аргументов командной строки.](https://github.com/phantasior/projects/tree/main/labwork-5-phantasior)
 ### [Лабораторная работа 6. Парсер своего типа конфигурационные файла (наподобие TOML)](https://github.com/phantasior/projects/tree/main/labwork-6-phantasior)
 ### [Лабораторная работа 7. Парсер метаинформации в формате ID3v2.4 из mp3 - файлов.](https://github.com/phantasior/projects/tree/main/labwork-7-phantasior)
-### [Лабораторная работа 8. Парсер метаинформации в формате ID3v2.4 из mp3 - файлов.](https://github.com/phantasior/projects/tree/main/labwork-8-phantasior)
+### [Лабораторная работа 8. STL - совместимый контейнер "Циклический буфер", с поддержкой возможности расширения и фиксированным размером.](https://github.com/phantasior/projects/tree/main/labwork-8-phantasior)
 ### [Лабораторная работа 9. MemoryPoolsAllocator.](https://github.com/phantasior/projects/tree/main/labwork-9-phantasior)
 ### [Лабораторная работа 10. Прогноз погоды. Внешние библиотеки.](https://github.com/phantasior/projects/tree/main/labwork-10-phantasior)
 ### [Лабораторная работа 11. Алгоритмы STL, xrange, zip](https://github.com/phantasior/projects/tree/main/labwork-11-phantasior)
