@@ -1,4 +1,4 @@
-#Лабораторные работы за 1 курс ИМТО ФИТИП ИСиТ
+# Лабораторные работы за 1 курс ИМТО ФИТИП ИСиТ
 ### [Лабораторная работа 1. Утилита WordCount](https://github.com/phantasior/projects/tree/main/labwork-1-phantasior)
 ### [Лабораторная работа 2. Длина арифметика uint2022_t](https://github.com/phantasior/projects/tree/main/labwork-2-phantasior)
 ### [Лабораторная работа 3. Модель песчаной кучи, позволяющую сохранять свои состояния в картинку в формате BMP](https://github.com/phantasior/projects/tree/main/labwork-3-phantasior)
