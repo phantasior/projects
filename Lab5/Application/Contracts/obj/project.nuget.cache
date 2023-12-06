@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "RIIWOjga4xiQyC2lh2tihB4g+Dj3SdEI7oyURIJcC5d2pHdT23duInZeI2QjBoeICkCycf8v2N1b27tI/Lh9mA==",
+  "success": true,
+  "projectFilePath": "/Users/artemmarcenko/dev/oop/src/Lab5/Application/Contracts/Contracts.csproj",
+  "expectedPackageFiles": [
+    "/Users/artemmarcenko/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/crayon/2.0.69/crayon.2.0.69.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/nsubstitute/5.1.0/nsubstitute.5.1.0.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.collections/1.0.4/sourcekit.analyzers.collections.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.enumerable/1.0.4/sourcekit.analyzers.enumerable.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.memberaccessibility/1.0.4/sourcekit.analyzers.memberaccessibility.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.nullable/1.0.4/sourcekit.analyzers.nullable.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.properties/1.0.4/sourcekit.analyzers.properties.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/stylecop.analyzers/1.2.0-beta.507/stylecop.analyzers.1.2.0-beta.507.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/stylecop.analyzers.unstable/1.2.0.507/stylecop.analyzers.unstable.1.2.0.507.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/system.diagnostics.eventlog/6.0.0/system.diagnostics.eventlog.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

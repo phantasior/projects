@@ -1,0 +1,118 @@
+@startuml
+'Ship:'
+abstract class ShipBase {
+    EngineBase Engine;
+    DeflectorBase Deflector;
+    HitPoints HP;
+    
+    void TakeDamage();
+    void virtual Run(); #impl for 1 engine   
+}
+
+abstract class DualEngineShipBase {
+    EngineBase SecondEngine;
+    
+    override Run();
+}
+
+ShipBase -- DualEngineShipBase 
+
+class Shuttle{}
+class Vaklas{}
+class Meredian{}
+class Stella{}
+class Avgur{}
+
+DualEngineShipBase -- Shuttle 
+ShipBase -- Vaklas
+ShipBase -- Meredian
+ShipBase -- Stella
+ShipBase -- Avgur
+
+'Engine:' 
+class TravelResult(Record) {
+    fuel;
+    time;
+}
+
+abstract EngineBase {
+    readonly FuelUnit FuelConsumption;
+    readonly VelocityUnit Speed;
+    
+    abstract TravelResult Run(Path);
+    abstract bool CanMove(Path)
+}
+
+abstract ImpulseEngineBase {
+    const FuelUnit FuelAmountToStart = 10
+}
+
+abstract JumpEngineBase {
+}
+
+class EClassImpulseEngine {}
+class CClassImpulseEngine {}
+class AlphaEngine {}
+class OmegaEngine {}
+class GammaEngine {}
+
+EngineBase -- ImpulseEngineBase
+EngineBase -- JumpEngineBase
+
+ImpulseEngineBase -- EClassImpulseEngine
+ImpulseEngineBase -- CClassImpulseEngine
+JumpEngineBase -- AlphaEngine
+JumpEngineBase -- OmegaEngine
+JumpEngineBase -- GammaEngine 
+
+'Obstacles:'
+abstract Obstacle {
+    DamageUnit Damage
+}
+
+class Meteor {}
+class Explosion {}
+class SpaceWhale {}
+
+Obstacle -- Meteor
+Obstacle -- Explosion
+Obstacle -- SpaceWhale
+
+'Environment:'
+abstract Environment {}
+
+class Space{}
+class NitrinoNebulae{}
+class HighDensityNebulae{}
+
+Space -- Environment
+NitrinoNebulae -- Environment
+HighDensityNebulae -- Environment
+
+'Deflectros'
+abstract DeflectorBase {
+    private bool usePhotonicDeflector = false;
+}
+
+class Class1Deflector {}
+class Class2Deflector {}
+class Class3Deflector {}
+
+DeflectorBase -- Class1Deflector
+DeflectorBase -- Class2Deflector
+DeflectorBase -- Class3Deflector
+
+'Route'
+class RouteResult {
+    something
+}
+
+class Route {
+    List<Path> Paths;
+}
+
+class Path {
+    int Length;
+    Environment env;
+}
+@enduml

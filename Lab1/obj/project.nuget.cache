@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "LaBY2Oul+eVdp3u/6wK9EMATT7xUrPBFij8stlPrMYmvRA18YUK8jO9ITgxDyHonDKULipkHQVeS9+aIAPeXxA==",
+  "success": true,
+  "projectFilePath": "/Users/artemmarcenko/dev/oop/src/Lab1/Lab1.csproj",
+  "expectedPackageFiles": [
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.collections/1.0.4/sourcekit.analyzers.collections.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.enumerable/1.0.4/sourcekit.analyzers.enumerable.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.memberaccessibility/1.0.4/sourcekit.analyzers.memberaccessibility.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.nullable/1.0.4/sourcekit.analyzers.nullable.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/sourcekit.analyzers.properties/1.0.4/sourcekit.analyzers.properties.1.0.4.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/stylecop.analyzers/1.2.0-beta.507/stylecop.analyzers.1.2.0-beta.507.nupkg.sha512",
+    "/Users/artemmarcenko/.nuget/packages/stylecop.analyzers.unstable/1.2.0.507/stylecop.analyzers.unstable.1.2.0.507.nupkg.sha512"
+  ],
+  "logs": []
+}
