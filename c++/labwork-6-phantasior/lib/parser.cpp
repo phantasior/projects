@@ -7,20 +7,10 @@ using namespace OMFL;
 
 Object EMPTY_OBJECT;
 
-Object::Object() 
-    : is_valid_(true)
-    , type_(Object::Error)
-{}
+Object::Object() : is_valid_(true) {}
 
-Object::Object(Object::Type type) 
-    : is_valid_(true)
-    , type_(type)
-{}
-
-Object::Object(Object::Type type, const std::variant<int, float, bool, std::string, std::vector<std::shared_ptr<Object>>>& val) 
-    : type_(type)
-    , val_(val)
-{}
+Object::Object(std::variant<std::monostate, int, float, bool, std::string, std::vector<Object>> val)
+    : val_(std::move(val)), is_valid_(true) {}
 
 void SkipSpaces(size_t& ptr, const std::string& data) {
     while (ptr < data.size() && isspace(data[ptr])) {
@@ -47,8 +37,8 @@ bool SkipLine(size_t& ptr, const std::string& data) {
     return true;
 }
 
-std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
-    std::variant<int, float, bool, std::string, std::vector<std::shared_ptr<Object>>> value;
+Object ParseValue(size_t& ptr, const std::string& data) {
+    std::variant<std::monostate, int, float, bool, std::string, std::vector<Object>> value;
     if (data[ptr] == '"') {
         std::string cur;
         ptr++;
@@ -58,25 +48,24 @@ std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
         }
 
         if (ptr == data.size()) {
-            return std::shared_ptr<Object>(new Object());
+            return Object();
         }
 
         value = cur;
         ptr++;
-
-        return std::shared_ptr<Object>(new Object(Object::Type::String, value));
+        return Object(value);
     } else if (isdigit(data[ptr]) || data[ptr] == '+' || data[ptr] == '-') {
         std::string num;
         if (data[ptr] == '+' || data[ptr] == '-') {
             if (!isdigit(data[ptr + 1])) {
-                return std::shared_ptr<Object>(new Object());
+                return Object();
             }
             num += data[ptr];
             ptr++;
         }
 
         if (data[ptr] == '.') {
-            return std::shared_ptr<Object>(new Object());
+            return Object();
         }
 
         bool is_float = false;
@@ -92,7 +81,7 @@ std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
         }
 
         if (is_float && !isdigit(data[ptr])) {
-            return std::shared_ptr<Object>(new Object());
+            return Object();
         }
 
         while (is_float && isdigit(data[ptr])) {
@@ -103,26 +92,26 @@ std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
 
         if (is_float) {
             value = stof(num);
-            return std::shared_ptr<Object>(new Object(Object::Type::Float, value));
+            return Object(value);
         }  else {
             value = stoi(num);
-            return std::shared_ptr<Object>(new Object(Object::Type::Int, value));
+            return Object(value);
         }
 
     } else if (ptr + 3 < data.size() && data.substr(ptr, 4) == "true") {
         value = true;
         ptr += 4;
-        return std::shared_ptr<Object>(new Object(Object::Type::Bool, value));
+        return Object(value);
     } else if (ptr + 4 < data.size() && data.substr(ptr, 5) == "false") {
         value = false;
         ptr += 5;
-        return std::shared_ptr<Object>(new Object(Object::Type::Bool, value));
+        return Object(value);
     } else if (data[ptr] == '[') {
-        std::vector<std::shared_ptr<Object>> cur;
+        std::vector<Object> cur;
         ptr++;
 
         if (data[ptr] == ']') {
-            return std::shared_ptr<Object>(new Object());
+            return Object();
         }
 
         while (data[ptr] != ']') {
@@ -133,7 +122,7 @@ std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
             }
 
             if (data[ptr] != ',') {
-                return std::shared_ptr<Object>(new Object());
+                return Object();
             }
 
             ptr++;
@@ -143,15 +132,15 @@ std::shared_ptr<Object> ParseValue(size_t& ptr, const std::string& data) {
         ptr++;
 
         value = cur;
-        return std::shared_ptr<Object>(new Object(Object::Type::Array, value));
+        return Object(value);
     }
 
-    return std::shared_ptr<Object>(new Object());
+    return Object();
 }
 
 Object OMFL::parse(const std::string& data) {
-    std::shared_ptr<Object> global_section(new Object());
-    std::shared_ptr<Object> cur_section = global_section;
+    Object global_section = Object();
+    Object* cur_section = &global_section;
 
     size_t ptr = 0;
     while (ptr < data.size()) {
@@ -165,45 +154,42 @@ Object OMFL::parse(const std::string& data) {
             continue;
         }
         
-        if (data[ptr] == '[') {
-            cur_section = std::shared_ptr<Object>(global_section);
+        if (data[ptr] == '[') { // SECTION
+            cur_section = &global_section;
 
             ptr++;
             SkipSpaces(ptr, data);
 
             if (ptr == data.size() || data[ptr] == ']') {
-                global_section->is_valid_ = false;
-                return *global_section;
+                global_section.is_valid_ = false;
+                return global_section;
             }
 
             size_t rptr = ptr; // ptr - beginning of sect_name, rptr - end
             while (ptr < data.size() && data[ptr] != ']') {
                 while (rptr < data.size() && data[rptr] != '.' && data[rptr] != ']') {
                     if (!isalnum(data[rptr]) && data[rptr] != '-' && data[rptr] != '_') {
-                        global_section->is_valid_ = false;
-                        return *global_section;
+                        global_section.is_valid_ = false;
+                        return global_section;
                     }
 
                     rptr++;
                 }
 
                 if (rptr == data.size()) {
-                    global_section->is_valid_ = false;
-                    return *global_section;
+                    global_section.is_valid_ = false;
+                    return global_section;
                 }
 
                 std::string sect_name = data.substr(ptr, rptr - ptr);
-                if (cur_section->sections_.find(sect_name) == cur_section->sections_.end()) {
-                    cur_section->sections_.insert({sect_name, std::shared_ptr<Object>(new Object(Object::Type::Section))});
-                }
-
-                cur_section = cur_section->sections_.at(sect_name);
+                cur_section->sections_.insert( {sect_name, Object()} );
+                cur_section = &cur_section->sections_.at(sect_name);
 
                 if (data[rptr] == ']') { // now we handled section and now skip line
                     ptr = rptr + 1;
                     if (!SkipLine(ptr, data)) {
-                        global_section->is_valid_ = false;
-                        return *global_section;
+                        global_section.is_valid_ = false;
+                        return global_section;
                     }
 
                     break;
@@ -216,81 +202,80 @@ Object OMFL::parse(const std::string& data) {
             std::string key;
             while (ptr < data.size() && !isspace(data[ptr]) && data[ptr] != '=') {
                 if (!isalnum(data[ptr]) && data[ptr] != '-' && data[ptr] != '_') {
-                    global_section->is_valid_ = false;
-                    return *global_section;
+                    global_section.is_valid_ = false;
+                    return global_section;
                 }
 
                 key += data[ptr];
                 ptr++;
             }
-
-
+            
             SkipSpaces(ptr, data);
             if (data[ptr] != '=' || key == "") {
-                global_section->is_valid_ = false;
-                return *global_section;
+                global_section.is_valid_ = false;
+                return global_section;
             }
 
             ptr++;
             while (data[ptr] == ' ') ptr++;
             if (data[ptr] == '\n') {
-                global_section->is_valid_ = false;
-                return *global_section;
+                global_section.is_valid_ = false;
+                return global_section;
             }
 
-            std::shared_ptr<Object> value = ParseValue(ptr, data);
+            Object value = ParseValue(ptr, data);
 
-            if (value->type_ == Object::Type::Error) {
-                global_section->is_valid_ = false;
-                return *global_section;
+            if (value.val_.index() == 0) { // monostate == error
+                global_section.is_valid_ = false;
+                return global_section;
             }
 
             if (!SkipLine(ptr, data)) {
-                global_section->is_valid_ = false;
-                return *global_section;
+                global_section.is_valid_ = false;
+                return global_section;
             }
             
             if (cur_section->values_.find(key) != cur_section->values_.end()) {
-                global_section->is_valid_ = false;
-                return *global_section;
+                global_section.is_valid_ = false;
+                return global_section;
             }
 
             cur_section->values_.insert({key, value});
         }
     }
 
-    return *global_section;
+    return global_section;
 }
 
-bool Object::IsInt() {
-    return type_ == Type::Int;
+bool Object::IsInt() const {
+    return val_.index() == 1;
 }
 
-bool Object::IsFloat() {
-    return type_ == Type::Float;
+bool Object::IsFloat() const {
+    return val_.index() == 2;
 }
 
-bool Object::IsBool() {
-    return type_ == Type::Bool;
+bool Object::IsBool() const {
+    return val_.index() == 3;
 }
 
-bool Object::IsString() {
-    return type_ == Type::String;
+bool Object::IsString() const {
+    return val_.index() == 4;
 }
 
-bool Object::IsArray() {
-    return type_ == Type::Array;
+bool Object::IsArray() const {
+    return val_.index() == 5;
 }
 
 bool Object::valid() const {
     return is_valid_;
 }
 
-int Object::AsInt() {
+int Object::AsInt() const {
     return std::get<int>(val_);
 }
 
-int Object::AsIntOrDefault(int def) {
+int Object::AsIntOrDefault(int def) const {
     if (IsInt()) {
         return std::get<int>(val_);
     } else {
@@ -298,11 +283,11 @@ int Object::AsIntOrDefault(int def) {
     }
 }
 
-float Object::AsFloat() {
+float Object::AsFloat() const {
     return std::get<float>(val_);
 }
 
-float Object::AsFloatOrDefault(float def) {
+float Object::AsFloatOrDefault(float def) const {
     if (IsFloat()) {
         return std::get<float>(val_);
     } else {
@@ -310,11 +295,11 @@ float Object::AsFloatOrDefault(float def) {
     }
 }
 
-std::string Object::AsString() {
+const std::string& Object::AsString() const {
     return std::get<std::string>(val_);
 }
 
-std::string Object::AsStringOrDefault(const std::string& def) {
+std::string Object::AsStringOrDefault(const std::string& def) const {
     if (IsString()) {
         return std::get<std::string>(val_);
     } else {
@@ -322,12 +307,12 @@ std::string Object::AsStringOrDefault(const std::string& def) {
     }
 }
 
-bool Object::AsBool() {
+bool Object::AsBool() const {
     return std::get<bool>(val_);
 }
 
-Object& Object::Get(const std::string& key) const {
-    std::shared_ptr<Object> res = std::make_shared<Object>(*this);
+const Object& Object::Get(const std::string& key) const {
+    const Object* res = this;
     size_t l = 0;
     size_t r = 0;
 
@@ -340,23 +325,29 @@ Object& Object::Get(const std::string& key) const {
         r++;
         l = r;
 
-        if (res->sections_.find(cur) != res->sections_.end()) {
-            res = res->sections_.at(cur);
-        } else if (res->values_.find(cur) != res->values_.end()) {
-            res = res->values_.at(cur);
-        } else {
-            return *res;
+
+        auto it = res->sections_.find(cur);
+        if (it != res->sections_.end()) {
+            res = &it->second;
+            continue;
         }
+
+        it = res->values_.find(cur);
+        if (it != res->values_.end()) {
+            res = &it->second;
+        }
+
+        return *res;
     }
 
     return *res;
 }
 
-Object& Object::operator[](int idx) {
-    auto cur = std::get<std::vector<std::shared_ptr<Object>>>(val_);
+const Object& Object::operator[](int idx) const {
+    auto& cur = std::get<std::vector<Object>>(val_);
     if (idx >= cur.size()) {
         return EMPTY_OBJECT;
     }
 
-    return *cur[idx]; 
+    return cur[idx];
 }

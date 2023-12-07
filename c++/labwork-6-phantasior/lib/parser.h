@@ -6,53 +6,40 @@
 #include <vector>
 #include <variant>
 
-
 namespace OMFL {
 
 class Object {
 public:
-    enum Type {
-        Section,
-        Int,
-        Float,
-        String,
-        Bool,
-        Array,
-        Error
-    };
-
     Object();
-    Object(Object::Type type);
-    Object(Object::Type type, const std::variant<int, float, bool, std::string, std::vector<std::shared_ptr<Object>>>& val);
+    Object(std::variant<std::monostate, int, float, bool, std::string, std::vector<Object>> val);
 
-    Object& Get(const std::string& key) const;
+    const Object& Get(const std::string& key) const;
 
-    int         AsInt();
-    int         AsIntOrDefault(int def);
-    float       AsFloat();
-    float       AsFloatOrDefault(float def);
-    std::string AsString();
-    std::string AsStringOrDefault(const std::string& def);
-    bool        AsBool();
+    int AsInt() const;
+    int AsIntOrDefault(int def) const;
+    float AsFloat() const;
+    float AsFloatOrDefault(float def) const;
+    const std::string& AsString() const;
+    std::string AsStringOrDefault(const std::string& def) const;
+    bool AsBool() const;
 
-    bool IsInt();
-    bool IsFloat();
-    bool IsBool();
-    bool IsString();
-    bool IsArray();
+    bool IsInt() const;
+    bool IsFloat() const;
+    bool IsBool() const;
+    bool IsString() const;
+    bool IsArray() const;
     bool valid() const;
 
-    Object& operator[](int);
+    const Object& operator[](int) const;
 
-    friend Object parse(const std::string& data);
 private:
-    std::map<std::string, std::shared_ptr<Object>> values_;
-    std::map<std::string, std::shared_ptr<Object>> sections_;
-    std::variant<int, float, bool, std::string, std::vector<std::shared_ptr<Object>>> val_;
-    bool is_valid_;
-    Type type_;
-};
+    friend Object parse(const std::string& data);
 
+    std::map<std::string, Object> values_;
+    std::map<std::string, Object> sections_;
+    std::variant<std::monostate, int, float, bool, std::string, std::vector<Object>> val_;
+    bool is_valid_;
+};
 
 Object parse(const std::string& data);
 

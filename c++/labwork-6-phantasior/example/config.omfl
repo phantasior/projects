@@ -1,6 +1,6 @@
 # OMFL example
 
-[common]
+[    common.first.sceond.dsfjh123]     #DSFJGHFS;HJM
 name = "Common config"
 description = "Some config"
 version = 1
@@ -8,11 +8,13 @@ version = 1
 [servers]
 
 [servers.first]
-enabled = true
+enabled      =   true
 ip = "127.0.0.1"
+a = 123456
+a = 11234.1345671
 ports = [ 100505, 10506 ]
 
 [servers.second]
 enabled = true
-ip = "127.0.0.1"
-ports = [ 10005, 1006 ]
+ip = "127.0.0.1"   
+ports = [ 10005, 1006, "asd", true ]
