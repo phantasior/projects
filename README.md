@@ -20,5 +20,5 @@
 ### [Лабораторная работа 2. Объектная модель “конфигуратора” персонального компьютера и существующих вариантов комплектующих.](https://github.com/phantasior/projects/tree/main/c%23/Lab2)
 ### [Лабораторная работа 3. Объектная модель корпоративной системы распределения сообщений.](https://github.com/phantasior/projects/tree/main/c%23/Lab3)
 ### [Лабораторная работа 4. Приложение для взаимодействия и управления файловой системой.](https://github.com/phantasior/projects/tree/main/c%23/Lab4)
-### [Лабораторная работа 5. Система банкомата.](https://github.com/phantasior/projects/tree/main/c%23/Lab5)
+### [Лабораторная работа 5. Система банковского автомата, с postgresql и луковой архитектурой.](https://github.com/phantasior/projects/tree/main/c%23/Lab5)
 
