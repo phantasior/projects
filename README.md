@@ -14,11 +14,11 @@
 ### [Лабораторная работа 12. Реляционная база данных в памяти с поддержкой упрощенных sql запросов.](https://github.com/phantasior/projects/tree/main/c%2B%2B/labwork-12-phantasior)
 
 
-## По предмету "Объектно ориентированное программивароние и проектирование на с#"
-## Все тех.задания можно найти [здесь](https://ronimizy.notion.site/Labs-ebf31349fa0a4c0d9328b198cfebed4e)
-### [Лабораторная работа 1. Объектная модель симулятора фэнтезийного космического передвижения](https://github.com/phantasior/projects/tree/main/c%23/Lab1)
-### [Лабораторная работа 2. Объектная модель “конфигуратора” персонального компьютера и существующих вариантов комплектующих](https://github.com/phantasior/projects/tree/main/c%23/Lab2)
-### [Лабораторная работа 3. Объектная модель корпоративной системы распределения сообщений](https://github.com/phantasior/projects/tree/main/c%23/Lab3)
-### [Лабораторная работа 4. Приложение для взаимодействия и управления файловой системой..](https://github.com/phantasior/projects/tree/main/c%23/Lab4)
-### [Лабораторная работа 5. Систему банкомата.](https://github.com/phantasior/projects/tree/main/c%23/Lab5)
+## По предмету "Объектно ориентированное программивароние и проектирование на с#".
+## Все тех.задания можно найти [здесь.](https://ronimizy.notion.site/Labs-ebf31349fa0a4c0d9328b198cfebed4e)
+### [Лабораторная работа 1. Объектная модель симулятора фэнтезийного космического передвижения.](https://github.com/phantasior/projects/tree/main/c%23/Lab1)
+### [Лабораторная работа 2. Объектная модель “конфигуратора” персонального компьютера и существующих вариантов комплектующих.](https://github.com/phantasior/projects/tree/main/c%23/Lab2)
+### [Лабораторная работа 3. Объектная модель корпоративной системы распределения сообщений.](https://github.com/phantasior/projects/tree/main/c%23/Lab3)
+### [Лабораторная работа 4. Приложение для взаимодействия и управления файловой системой.](https://github.com/phantasior/projects/tree/main/c%23/Lab4)
+### [Лабораторная работа 5. Система банкомата.](https://github.com/phantasior/projects/tree/main/c%23/Lab5)
 
