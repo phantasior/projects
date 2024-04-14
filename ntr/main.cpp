@@ -10,13 +10,24 @@ typename std::enable_if<std::is_integral<T>::value, T>::type divUp(T x, T y) {
     return (x + y - 1) / y;
 }
 
+template<std::size_t N>
+void reverse(std::bitset<N> &b) {
+    for(std::size_t i = 0; i < N/2; ++i) {
+        bool t = b[i];
+        b[i] = b[N-i-1];
+        b[N-i-1] = t;
+    }
+}
+
 void print(const void* raw_ptr, size_t size_in_bits) {
     std::cout << '[';
 
     const uint8_t* ptr = static_cast<const uint8_t*>(raw_ptr);
     for (size_t i = 0; i < size_in_bits / kBitInByte; ++i) {
-        std::cout << std::bitset<kBitInByte>(ptr[i]);
-        std::cout << (size_in_bits % kBitInByte != 0 ? "|" : "");
+        auto bs = std::bitset<kBitInByte>(ptr[i]);
+        reverse(bs);
+        std::cout << bs;
+        std::cout << (size_in_bits % kBitInByte == 0 && i == size_in_bits / kBitInByte - 1 ? "" : "|");
     }
 
     for (size_t i = 0; i < size_in_bits % kBitInByte; ++i) {
@@ -30,16 +41,17 @@ void print(const void* raw_ptr, size_t size_in_bits) {
 void invertBits(void* raw_mem, size_t len, auto&& should_be_reversed) {
     static_assert(std::is_invocable_r_v<bool, decltype(should_be_reversed), size_t>);
 
-    auto invertBit = [&](std::byte& byte, size_t bit) -> void {
-        byte ^= static_cast<std::byte>(1 << bit);
+    auto invertBit = [&](uint8_t& byte, size_t bit) -> void {
+        byte ^= 1 << bit;
     };
 
-    std::byte* mem = static_cast<std::byte*>(raw_mem);
+    std::uint8_t* mem = static_cast<uint8_t*>(raw_mem);
     for (size_t byte_cnt = 0; byte_cnt < divUp(len, kBitInByte); ++byte_cnt) {
-        std::byte byte = *(mem + byte_cnt);
+        uint8_t byte = *(mem + byte_cnt);
 
         for (size_t bit_cnt = 0; bit_cnt < std::min(8ul, len - byte_cnt * kBitInByte); ++bit_cnt) {
-            if (std::forward<decltype(should_be_reversed)>(should_be_reversed)(byte_cnt * kBitInByte + kBitInByte - bit_cnt - 1)) {
+            size_t cur_bit = byte_cnt * kBitInByte + bit_cnt;
+            if (std::forward<decltype(should_be_reversed)>(should_be_reversed)(cur_bit)) {
                 invertBit(byte, bit_cnt);
             }
         }
@@ -51,6 +63,7 @@ void invertBits(void* raw_mem, size_t len, auto&& should_be_reversed) {
 
 void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& test_message) {
     std::cout << "Test: " << test_message << '\n';
+    std::cout << "There is " << size_in_bits << " bits\n";
     auto ptr = std::make_unique<uint8_t[]>(divUp(size_in_bits, kBitInByte));
 
     std::cout << "Before: "; 
@@ -70,7 +83,12 @@ int main() {
     test(7,  [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
     test(50, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
     test(81, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(49, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(63, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(9,  [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(10, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(11, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(12, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(13, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(14, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(15, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
 }
-
-
