@@ -7,6 +7,22 @@
 
 const size_t kBitInByte = 8;
 
+class Timer {
+public:
+    Timer() {
+        start = std::chrono::steady_clock::now();
+    }
+
+    ~Timer() {
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> diff = end - start;
+        std::cout << "Time elapsed: " << diff.count() << " seconds" << std::endl;
+    }
+
+private:
+    std::chrono::time_point<std::chrono::steady_clock> start;
+};
+
 template<typename T>
 typename std::enable_if<std::is_integral<T>::value, T>::type divUp(T x, T y) {
     return (x + y - 1) / y;
@@ -14,10 +30,8 @@ typename std::enable_if<std::is_integral<T>::value, T>::type divUp(T x, T y) {
 
 template<std::size_t N>
 void reverse(std::bitset<N> &b) {
-    for(std::size_t i = 0; i < N/2; ++i) {
-        bool t = b[i];
-        b[i] = b[N-i-1];
-        b[N-i-1] = t;
+    for(std::size_t i = 0; i < N / 2; ++i) {
+        std::swap(b[i], b[N - i - 1]);
     }
 }
 
@@ -76,12 +90,12 @@ void solve(void* mem, size_t len, auto&& should_be_reversed) {
     threads.reserve(num_threads - 1);
     uint8_t* first = static_cast<uint8_t*>(mem);
     const size_t block_size = len / num_threads;
-    for (size_t i = 0; i < threads.size(); ++i) {
+    for (size_t i = 0; i < num_threads - 1; ++i) {
         threads.emplace_back(invertBits<bool(*)(size_t)>, static_cast<void*>(first), block_size, std::forward<decltype(should_be_reversed)>(should_be_reversed));
-        first += block_size;
+        first += block_size / kBitInByte;
     }
 
-    const size_t lastPartLen = len + static_cast<uint8_t*>(mem) - first;
+    const size_t lastPartLen = len/8 + static_cast<uint8_t*>(mem) - first;
     invertBits(first, lastPartLen, std::forward<decltype(should_be_reversed)>(should_be_reversed));
 
     for (auto& t : threads) {
@@ -94,22 +108,35 @@ void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& tes
     std::cout << "There is " << size_in_bits << " bits\n";
     auto ptr = std::make_unique<uint8_t[]>(divUp(size_in_bits, kBitInByte));
 
-    std::cout << "Before: "; 
-    print(ptr.get(), size_in_bits);
+    // std::cout << "Before: "; 
+    // print(ptr.get(), size_in_bits);
 
-    solve(static_cast<void*>(ptr.get()), size_in_bits, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+    std::cout << "Multithread solition:\n";
 
-    std::cout << "After:  ";
-    print(ptr.get(), size_in_bits);
+    {
+        Timer timer;
+        solve(ptr.get(), size_in_bits, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+    }
+
+    std::cout << "Singlethread solution:\n";
+
+    {
+        Timer timer;
+        invertBits(ptr.get(), size_in_bits, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+    }   
+
+    // std::cout << "After:  ";
+    // print(ptr.get(), size_in_bits);
+
     std::cout << "-------------------------\n";
 }
 
 int main() {
-    test(1000,  [](size_t bit) -> bool { return false; },        "do not reverse at all");
-    test(1000,  [](size_t bit) -> bool { return true; },         "reverse all bits");
-    test(3200,  [](size_t bit) -> bool { return bit % 2 == 1; }, "reverse odd bits");
-    test(4000,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
-    test(1500,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
-    test(2222,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
-    test(1234,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
+    test(100000000, [](size_t bit) -> bool { return bit % 10 == 3; }, "do not reverse at all");
+    test(100000,    [](size_t bit) -> bool { return true; },          "reverse all bits");
+    test(3200,      [](size_t bit) -> bool { return bit % 2 == 1; },  "reverse odd bits");
+    test(4000,      [](size_t bit) -> bool { return bit % 2 == 0; },  "reverse even bits");
+    test(15,        [](size_t bit) -> bool { return bit % 2 == 0; },  "reverse even bits");
+    test(2222,      [](size_t bit) -> bool { return bit % 2 == 0; },  "reverse even bits");
+    test(1234,      [](size_t bit) -> bool { return bit % 2 == 0; },  "reverse even bits");
 }
