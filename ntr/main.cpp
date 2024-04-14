@@ -28,6 +28,8 @@ void print(const void* raw_ptr, size_t size_in_bits) {
 
 
 void invertBits(void* raw_mem, size_t len, auto&& should_be_reversed) {
+    static_assert(std::is_invocable_r_v<bool, decltype(should_be_reversed), size_t>);
+
     auto invertBit = [&](std::byte& byte, size_t bit) -> void {
         byte ^= static_cast<std::byte>(1 << bit);
     };
@@ -62,10 +64,10 @@ void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& tes
 }
 
 int main() {
-    test(32, [](size_t bit) -> bool { return true; }, "reverse all bits");
+    test(32, [](size_t bit) -> bool { return true; },         "reverse all bits");
     test(32, [](size_t bit) -> bool { return bit % 2 == 1; }, "reverse odd bits");
     test(32, [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
-    test(7, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(7,  [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
     test(50, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
     test(81, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
     test(49, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
