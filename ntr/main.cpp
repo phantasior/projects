@@ -2,6 +2,8 @@
 #include <type_traits>
 #include <iostream>
 #include <memory>
+#include <thread>
+#include <vector>
 
 const size_t kBitInByte = 8;
 
@@ -60,6 +62,32 @@ void invertBits(void* raw_mem, size_t len, auto&& should_be_reversed) {
     }
 }
 
+void solve(void* mem, size_t len, auto&& should_be_reversed) {
+    if (len == 0) {
+        return;
+    }
+
+    const size_t min_job_size = 1000;
+    const size_t hardware_threads = std::thread::hardware_concurrency();
+    const size_t max_threads = hardware_threads == 0 ? 2 : hardware_threads;
+    const size_t num_threads = std::min(max_threads, divUp(len, min_job_size));
+
+    std::vector<std::thread> threads;
+    threads.reserve(num_threads - 1);
+    uint8_t* first = static_cast<uint8_t*>(mem);
+    const size_t block_size = len / num_threads;
+    for (size_t i = 0; i < threads.size(); ++i) {
+        threads.emplace_back(invertBits<bool(*)(size_t)>, static_cast<void*>(first), block_size, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+        first += block_size;
+    }
+
+    const size_t lastPartLen = len + static_cast<uint8_t*>(mem) - first;
+    invertBits(first, lastPartLen, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+
+    for (auto& t : threads) {
+        t.join();
+    }
+}
 
 void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& test_message) {
     std::cout << "Test: " << test_message << '\n';
@@ -69,7 +97,7 @@ void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& tes
     std::cout << "Before: "; 
     print(ptr.get(), size_in_bits);
 
-    invertBits(static_cast<void*>(ptr.get()), size_in_bits, std::forward<decltype(should_be_reversed)>(should_be_reversed));
+    solve(static_cast<void*>(ptr.get()), size_in_bits, std::forward<decltype(should_be_reversed)>(should_be_reversed));
 
     std::cout << "After:  ";
     print(ptr.get(), size_in_bits);
@@ -77,18 +105,11 @@ void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& tes
 }
 
 int main() {
-    test(32, [](size_t bit) -> bool { return true; },         "reverse all bits");
-    test(32, [](size_t bit) -> bool { return bit % 2 == 1; }, "reverse odd bits");
-    test(32, [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
-    test(7,  [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(50, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(81, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(63, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(9,  [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(10, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(11, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(12, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(13, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(14, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
-    test(15, [](size_t bit) -> bool { return bit % 2 == 0; }, "bits number % 8 != 0");
+    test(1000,  [](size_t bit) -> bool { return false; },        "do not reverse at all");
+    test(1000,  [](size_t bit) -> bool { return true; },         "reverse all bits");
+    test(3200,  [](size_t bit) -> bool { return bit % 2 == 1; }, "reverse odd bits");
+    test(4000,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
+    test(1500,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
+    test(2222,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
+    test(1234,  [](size_t bit) -> bool { return bit % 2 == 0; }, "reverse even bits");
 }
