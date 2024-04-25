@@ -132,6 +132,7 @@ void test(size_t size_in_bits, auto&& should_be_reversed, const std::string& tes
 }
 
 int main() {
+    divUp(3.0, 2.0);
     test(100000000, [](size_t bit) -> bool { return bit % 10 == 3; }, "do not reverse at all");
     test(100000,    [](size_t bit) -> bool { return true; },          "reverse all bits");
     test(3200,      [](size_t bit) -> bool { return bit % 2 == 1; },  "reverse odd bits");
