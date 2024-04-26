@@ -1,7 +1,10 @@
 #ifndef	_ConnectionSetupComplete_H_
 #define	_ConnectionSetupComplete_H_
 
-#include <RRCConnectionSetupComplete.h>
+extern "C" {
+    #include <RRCConnectionSetupComplete.h>
+}
+
 #include <stdio.h>
 #include <sys/types.h>
 

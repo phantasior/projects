@@ -1,7 +1,9 @@
 #ifndef	_ConnectionRequest_H_
 #define	_ConnectionRequest_H_
 
-#include <RRCConnectionRequest.h>
+extern "C" {
+    #include <RRCConnectionRequest.h>
+}
 
 typedef struct EncodedConnectionRequest {
     uint8_t* ptr;

@@ -42,7 +42,7 @@ int main() {
         addr.sin_addr.s_addr = htonl(INADDR_ANY)
     };
 
-    char buf[1024];
+    uint8_t buf[1024];
     int listener = socket(AF_INET, SOCK_STREAM, 0);
     if(listener < 0) {
         perror("socket");

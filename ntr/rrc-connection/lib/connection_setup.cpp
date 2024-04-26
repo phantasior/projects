@@ -19,7 +19,7 @@ EncodedConnectionSetup CreateConnectionSetup() {
 
     return (EncodedConnectionSetup) {
         .ptr = buffer,
-        .size = er.encoded
+        .size = static_cast<size_t>(er.encoded)
     };
 }
 
