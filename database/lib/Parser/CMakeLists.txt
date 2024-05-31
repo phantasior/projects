@@ -1,0 +1,1 @@
+#add_library(parser CharSource.cpp CharSource.h SQLParser.cpp SQLParser.h)

@@ -1,0 +1,9 @@
+{
+    "reload_frequency": 5,
+    "days_to_show": 2,
+    "countries": [
+        "Moscow",
+        "Ottawa", 
+        "Saint Petersburg"
+    ]
+}
