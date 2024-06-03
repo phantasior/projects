@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-//                     Table:
+//                      Table:
 //     -----------------------------------------
 //     |InfoBlock|InfoBlock|InfoBlock|InfoBlock|     <- Info
 //     -----------------------------------------
